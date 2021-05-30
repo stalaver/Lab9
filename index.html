@@ -55,18 +55,103 @@
     <button>Trigger a Global Error</button>
   </section>
 
+
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "4c8a7bfbcbe9463c8153bf136d5b492e"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  <script>
+    class NoEntryError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "NoEntryError";
+      }
+    }
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (firstNum.length == 0 || secondNum.length == 0) {
+          throw new NoEntryError("All entries must be inputted");
+        }
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch(err) {
+        console.error(err);
+        alert("Entries need to be filled.")
+      }
+      finally {
+        alert("Done.")
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    //Console Log Demo
+    errorBtns[0].addEventListener('click', () => {
+      console.log("Console Log Demo");
+    });
+    //Console Error Demo
+    errorBtns[1].addEventListener('click', () => {
+      console.error("Console Error Demo");
+    });
+    //Console Dir
+    errorBtns[2].addEventListener('click', () => {
+      console.dir(errorBtns[2]);
+    });
+    //Console dirxml
+    errorBtns[3].addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+    //Console Group Start
+    errorBtns[4].addEventListener('click', () => {
+      console.group("Console Group Start");
+    });   
+    //Console Group End
+    errorBtns[5].addEventListener('click', () => {
+      console.groupEnd();
+      console.log("Group ended.")
+    });
+    //Console Table
+    errorBtns[6].addEventListener('click', () => {
+      console.table(["Software Engineering", "Programming Languages", "Advanced Software Engineering"]);
+    });
+    // //Start Timer
+    errorBtns[7].addEventListener('click',() => {
+      console.time();
+    });
+    // //End Timer
+    errorBtns[8].addEventListener('click', () => {
+      console.timeEnd();
+    });
+    // //Console Trace
+    errorBtns[9].addEventListener('click', () => {
+      const deep = () => { deeper() };
+      const deeper = () => { deepest() };
+      const deepest = () => { traceTest() };
+      const traceTest = () => { console.trace() };
+      deep();
+      console.trace();
+    });
+    // //Trigger a Global Error
+    errorBtns[10].addEventListener('click', () => {
+      try {
+        boom();
+      } catch(err) {
+        console.log("Sadly an error happened, friend");
+        throw new ReferenceError("Can't find variable boom");
+      }
+    });
+
+    window.onerror = function () {
+      console.log("Error found!");
+      TrackJS.track('Testing TrackJS!');
+    }
   </script>
 </body>
 </html>
