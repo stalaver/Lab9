@@ -1,6 +1,6 @@
 # Lab9
-Sergio Talavera
-Avinash Nayak
+- Sergio Talavera
+- Avinash Nayak
 
 Link to Github Page: 
 https://stalaver.github.io/Lab9
